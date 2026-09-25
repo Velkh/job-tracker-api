@@ -39,4 +39,6 @@ enum Status {
   INTERVIEW
   OFFERED
   REJECTED
+  GHOSTED
+  ACCEPTED
 }
