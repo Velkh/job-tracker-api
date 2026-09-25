@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jobs      Job[]
+
+  @@map("users")
+}
+
+model Job {
+  id        Int      @id @default(autoincrement())
+  company   String
+  position  String
+  status    Status   @default(APPLIED)
+  location  String?
+  salary    String?
+  notes     String?  @db.Text
+  appliedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("jobs")
+}
+
+enum Status {
+  APPLIED
+  INTERVIEW
+  OFFERED
+  REJECTED
+}
