@@ -76,3 +76,21 @@ export const getMe = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllUsers = async (req,res) => {
+    try {
+        const users = await prisma.user.findMany({
+            select:{
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                updatedAt : true,
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json({success: true, data: users });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

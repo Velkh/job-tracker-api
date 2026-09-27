@@ -13,6 +13,6 @@ app.get('/health', (req, res) => {
 
 app.use(express.json());
 app.use('/api/jobs', jobRoutes);
-app.use('/api/authh', authRoutes);
+app.use('/api/auth', authRoutes);
 
 export default app;
