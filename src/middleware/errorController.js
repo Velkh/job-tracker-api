@@ -1,18 +1,17 @@
-import jwt from 'jsonwebtoken';
+import { ZodError } from 'zod';
 
-export const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Access token required' });
+export const errorHandler = (err, req, res, next) => {
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation Error',
+      errors: err.errors.map(e => ({ path: e.path.join('.'), message: e.message }))
+    });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(401).json({ success: false, message: 'Invalid or expired token' });
-    }
-    req.user = user;
-    next();
+  console.error(err);
+  return res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error'
   });
 };
